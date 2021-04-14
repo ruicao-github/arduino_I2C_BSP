@@ -24,11 +24,9 @@ void loop() {
 // the address of the slave and the length of the message (byte_limit) will be the input to the function
 
 void add_slave_and_print_message(int address, int bytes_limit){
-  Wire.requestFrom(address,bytes_limit);    // initialuze the reader
-  // a length limit will be set. The part of the message that exceeds the length of the length limit will
-  // be discarded. Each ASCI character will take 1 byte.
-  // for example, for a limit of 3 byte, if the slave sender sends a message "complete", only "com" will be
-  // by the master.
+  Wire.requestFrom(address,bytes_limit);
+  // This is the key function. It handles a complete I2C transaction, with START, STOP and reading databytes.
+  // a length limit will be set. Only so many bytes of data will be requested.
 
   while (Wire.available()) { // slave may send less than requested
     char c = Wire.read(); // receive a byte as character
