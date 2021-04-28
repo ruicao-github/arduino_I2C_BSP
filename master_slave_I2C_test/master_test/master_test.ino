@@ -18,7 +18,7 @@ void loop() {  //loop through the communication with each slave
     //Serial.println((String)"loop "+i+" ");
     communication(i);
   }
-  delay(500);
+  delay(1000);
 }
 
 void communication(int i){ //function that handles the communication
