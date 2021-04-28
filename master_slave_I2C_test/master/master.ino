@@ -13,8 +13,8 @@ void setup() {
 
 void loop() {
   // add 3 slaves, each will send a message to the master at regular interval
-  add_slave_and_print_message(8,3);
-  add_slave_and_print_message(9,3);
+  //add_slave_and_print_message(8,3);
+  //add_slave_and_print_message(9,3);
   add_slave_and_print_message(10,3);
 }
 
