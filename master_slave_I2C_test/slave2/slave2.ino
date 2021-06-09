@@ -15,7 +15,6 @@ void loop() {
 
 
 void requestEvent() {
-  c1+=1;
   String message="Message";
   message=message + message_index + ' ';
   Wire.write(message.c_str()); 
@@ -23,7 +22,6 @@ void requestEvent() {
 
 void receiveEvent()
 {
-  c2+=1;
   int x = (int)Wire.read()-77; // receive byte as a character
   if(x==0){
     Wire.write(3);

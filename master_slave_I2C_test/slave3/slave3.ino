@@ -1,32 +1,47 @@
 #include <Wire.h>
-//#include <String.h>
+#include <String.h>
+#include <Array.h>
 
 void setup() {
-  Wire.begin(8);                // join i2c bus with address #10
+  Wire.begin(8);                // join i2c bus with address #8
   Wire.onReceive(receiveEvent); // interupt function.
-  Wire.onRequest(requestEvent); // interupt function. If the request is received from the master, the interupt will be invoked.
-  Serial.begin(9600);  // start serial for output
+  Wire.onRequest(requestEvent); // interupt function. 
+  Serial.begin(9600);  // start serial for output and debuging
 }
 
-int x;
-int y;
+const int ELEMENT_COUNT_MAX = 30; //max buffer size for storing detection messages
+Array<String,ELEMENT_COUNT_MAX> buffer_;
+
+int x; //message request index received from the master.
+// 0: asking how many detection does the slave detect.
+//other positive int: request for the detection message of that index. (imagine the detection message is stored in an array)
+
 void loop() {
-  delay(100);
+  generateRandomMessageAndStoreInBuffer();
+  delay(1000);
 }
 
+
+void generateRandomMessageAndStoreInBuffer(){
+  int rand_n=random(10); //random ID for new detection message
+  buffer_.push_back((String)"Message" + rand_n + ' ');
+}
 
 void requestEvent() {
-  Serial.println("reply");
-  y=x;
-  Wire.write(y); 
+  if(x==0){
+    Wire.write(buffer_.size()); // reply that how many IDs have been detected (stored in buffer)
+    return;
+  }
+//  else{
+//    Serial.println((String)"send message "+x);
+//  }
+
+  Wire.write(buffer_[x-1].c_str()); 
 }
 
 void receiveEvent()
 {
-  while(Wire.available())    // slave may send less than requested
-  {
-    x = Wire.read(); 
-    Serial.println(x);
-  }
- 
+  x = Wire.read(); // read the message request index
+  //Serial.println((String)"message index requested is "+x);
+  
 }
