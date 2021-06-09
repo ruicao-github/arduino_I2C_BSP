@@ -11,16 +11,31 @@ void setup() {
   Wire.begin();        // join i2c bus (master do not need to specify the address)
   Serial.begin(9600);  // start serial output for debuging (otherwise Serial.print will not work)
 }
+union unsignLong
+{
+   unsigned long longNumber;
+   byte longBytes[4];
+};
+
 
 int n_slaves=3; //define available number of slaves
 void loop() {  //loop through the communication with each slave
-  for(int i=0;i<n_slaves;i++){
-    //Serial.println((String)"loop "+i+" ");
-    communication(i);
-  }
+  test();
+//  for(int i=0;i<n_slaves;i++){
+//    //Serial.println((String)"loop "+i+" ");
+//    communication(i);
+//  }
   delay(1000);
 }
 
+void test(){
+  int slave_address=8;
+  unsignLong time_;
+  time_.longNumber=millis();
+  Wire.beginTransmission(slave_address);
+  Wire.write(time_.longBytes,4); //0 is the code for asking slave, how many new ID does it detect.
+  Wire.endTransmission();
+}
 void communication(int i){ //function that handles the communication
   int slave_address=i+8; //slave address starts at 8
   Serial.println((String)"slave_address "+slave_address+" ");

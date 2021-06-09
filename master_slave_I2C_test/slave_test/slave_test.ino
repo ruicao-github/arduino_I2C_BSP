@@ -8,6 +8,12 @@ void setup() {
   Serial.begin(9600);  // start serial for output and debuging
 }
 
+union unsignLong
+{
+   unsigned long longNumber;
+   byte longBytes[4];
+};
+
 int x; //message request index received from the master.
 // 0: asking how many detection does the slave detect.
 //other positive int: request for the detection message of that index. (imagine the detection message is stored in an array)
@@ -32,7 +38,18 @@ void requestEvent() {
 
 void receiveEvent()
 {
-  x = Wire.read(); // read the message request index
-  Serial.println((String)"message index requested is "+x);
-  
+  unsignLong time_;
+  int i=0;
+  while(Wire.available())    // slave may send less than requested
+  {
+    time_.longBytes[0] = Wire.read();
+      time_.longBytes[1] = Wire.read();
+      time_.longBytes[2] = Wire.read();
+      time_.longBytes[3] = Wire.read();
+      Serial.println(time_.longNumber);
+  }
+//  //sscanf(buffer_,"%lu",&time_);
+//  //time_=strtoul(buffer_,&ptr, 10);
+//  Serial.println("time_");
+//  Serial.println(time_); 
 }
