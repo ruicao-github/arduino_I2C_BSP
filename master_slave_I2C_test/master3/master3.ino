@@ -23,7 +23,7 @@ union unsignLong
 int n_day=1;
 unsigned long day_millis=n_day*5*24*60*60*1000;
 
-int n_slaves=1; //define available number of slaves
+int n_slaves=3; //define available number of slaves
 void loop() {  //loop through the communication with each slave
   //sync the time with the slave every 5 days
   if(millis()>day_millis){

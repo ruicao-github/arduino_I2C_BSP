@@ -4,7 +4,7 @@
 //https://www.arduino.cc/reference/en/libraries/array/
 
 void setup() {
-  Wire.begin(8);                // join i2c bus with address #8
+  Wire.begin(10);                // join i2c bus with address #8
   Wire.onReceive(receiveEvent); // interupt function.
   Wire.onRequest(requestEvent); // interupt function. 
   //Serial.begin(9600);  // start serial for output and debuging
