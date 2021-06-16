@@ -9,8 +9,9 @@
 
 void setup() {
   Wire.begin();        // join i2c bus (master do not need to specify the address)
-  timeSync();
   Serial.begin(9600);  // start serial output for debuging (otherwise Serial.print will not work)
+  delay(100);
+  timeSync();
 }
 union unsignLong
 {
@@ -22,7 +23,7 @@ union unsignLong
 int n_day=1;
 unsigned long day_millis=n_day*5*24*60*60*1000;
 
-int n_slaves=3; //define available number of slaves
+int n_slaves=1; //define available number of slaves
 void loop() {  //loop through the communication with each slave
   //sync the time with the slave every 5 days
   if(millis()>day_millis){
@@ -45,6 +46,7 @@ void timeSync(){
     Wire.beginTransmission(slave_address);
     Wire.write(time_.longBytes,4);
     Wire.endTransmission();
+    //Serial.println(time_.longNumber);
   }    
 }
 
@@ -64,7 +66,7 @@ void communication(int i){ //function that handles the communication
       Wire.beginTransmission(slave_address);
       Wire.write(j); //send the request that the master want the jth message
       Wire.endTransmission();
-      Wire.requestFrom(slave_address, 14); //read the message returned from the slave
+      Wire.requestFrom(slave_address, 18); //read the message returned from the slave
       while (Wire.available()) { // slave may send less than requested
         char d = Wire.read(); // receive a byte as character
         Serial.print(d);         // print the message

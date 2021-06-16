@@ -7,11 +7,11 @@ void setup() {
   Wire.begin(8);                // join i2c bus with address #8
   Wire.onReceive(receiveEvent); // interupt function.
   Wire.onRequest(requestEvent); // interupt function. 
-  Serial.begin(9600);  // start serial for output and debuging
+  //Serial.begin(9600);  // start serial for output and debuging
 }
 
 unsigned long diff=0;
-const int ELEMENT_COUNT_MAX = 30; //max buffer size for storing detection messages
+const int ELEMENT_COUNT_MAX = 20; //max buffer size for storing detection messages
 Array<String,ELEMENT_COUNT_MAX> buffer_;
 union unsignLong
 {
@@ -25,25 +25,31 @@ int x; //message request index received from the master.
 
 void loop() {
   generateRandomMessageAndStoreInBuffer();
-  delay(1000);
+  delay(500);
 }
 
 
 void generateRandomMessageAndStoreInBuffer(){
   int rand_n=random(10); //random ID for new detection message
-  buffer_.push_back((String)"Message" + rand_n + ' '+millis());
+  char time_zero_padded[10];
+  sprintf(time_zero_padded,"%010d", millis()+diff);
+  //Serial.println(time_zero_padded);
+  if(rand_n<5) buffer_.push_back((String)"Message" + rand_n + ' '+time_zero_padded);  
 }
 
+int buffer_size;
 void requestEvent() {
   if(x==0){
-    Wire.write(buffer_.size()); // reply that how many IDs have been detected (stored in buffer)
+    buffer_size=buffer_.size();
+    Wire.write(buffer_size); // reply that how many IDs have been detected (stored in buffer)
     return;
   }
 //  else{
 //    Serial.println((String)"send message "+x);
 //  }
 
-  Wire.write(buffer_[x-1].c_str()); 
+  Wire.write(buffer_[x-1].c_str());
+  if(x==buffer_size) buffer_.clear();
 }
 
 void receiveEvent()
